@@ -14,10 +14,30 @@
 
 
 async function getChefBirthday(id) {
-    const resricetta = await fetch(`https://dummyjson.com/recipes/${id}`);
-    const ricetta = await resricetta.json()
-    const reschef = await fetch(`https://dummyjson.com/users/${ricetta.userId}`);
-    const chef = await reschef.json()
+    let ricetta;
+    try {
+        const resricetta = await fetch(`https://dummyjson.com/recipes/${id}`);
+        ricetta = await resricetta.json()
+    } catch (error) {
+        console.log(error);
+        throw new Error(`Non recupero la ricetta ${id}`)
+    }
+    if (!ricetta) {
+        throw new Error(`Non ho trovato la ricetta ${id}`)
+    }
+
+    let chef;
+    try {
+        const reschef = await fetch(`https://dummyjson.com/users/${ricetta.userId}`);
+        chef = await reschef.json()
+    } catch (error) {
+        console.log(error);
+        throw new Error(`Non recupero lo chef ${id}`)
+    }
+    if (!chef) {
+        throw new Error(`Non ho trovato lo chef ${id}`)
+    }
+
     return chef.birthDate;
 }
 
